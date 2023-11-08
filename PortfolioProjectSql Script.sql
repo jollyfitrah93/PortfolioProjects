@@ -68,31 +68,85 @@
 
 --looking at total population vs vaccinations
 
+--using CTE (Common Table Expression)/Untuk mempermudah query yang kompleks
+with PopvsVac (continent, location, date, population, new_vaccinations, TotalVaccinationsPerLocation)
+as
+(
 select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
-, SUM(cast(new_vaccinations as int)) OVER (partition by dea.location) as TotalVaccinationsPerLocation
+, SUM(cast(new_vaccinations as int)) OVER (partition by dea.location order by dea.location
+, dea.date) as TotalVaccinationsPerLocation
+--, (TotalVaccinationsPerLocation/population) as AverageVaccinatedPerLocation
 from CovidDeaths as dea
 Join CovidVaccinations as vac
 	on dea.location = vac.location 
 	and dea.date=vac.date
 where dea.continent is not null
-order by 2,3
+--order by 2,3
+)
 
---highest vaccinated by location
-select dea. continent, dea.location, SUM(cast(new_vaccinations as int)) as TotalVaccinated
-from CovidDeaths as dea
-Join CovidVaccinations as vac
-	on dea.location = vac.location 
-	and dea.date=vac.date
-where dea.continent is not null
-group by dea.location, dea.continent
-order by TotalVaccinated desc
 
---Highest vaccinated by continent
-select dea. continent,  SUM(cast(new_vaccinations as int)) as TotalVaccinated
+-- Using temp table
+Drop table if exists #PercentPopulationVaccinated
+Create table #PercentPopulationVaccinated
+(
+Continent nvarchar(255),
+location nvarchar(255),
+Date datetime,
+Population numeric,
+new_vaccinations numeric,
+TotalVaccinationsPerLocation numeric
+)
+
+Insert into #PercentPopulationVaccinated
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(cast(new_vaccinations as int)) OVER (partition by dea.location order by dea.location
+, dea.date) as TotalVaccinationsPerLocation
+--, (TotalVaccinationsPerLocation/population) as AverageVaccinatedPerLocation
 from CovidDeaths as dea
 Join CovidVaccinations as vac
 	on dea.location = vac.location 
 	and dea.date=vac.date
 where dea.continent is not null
-group by dea.continent
-order by TotalVaccinated desc
+--order by 2,3
+
+select *, (TotalVaccinationsPerLocation/population)*100 as AveragevaccinatedPerLocation
+from #PercentPopulationVaccinated
+
+
+----highest vaccinated by location
+--select dea. continent, dea.location, SUM(cast(new_vaccinations as int)) as TotalVaccinated
+--from CovidDeaths as dea
+--Join CovidVaccinations as vac
+--	on dea.location = vac.location 
+--	and dea.date=vac.date
+--where dea.continent is not null
+--group by dea.location, dea.continent
+--order by TotalVaccinated desc
+
+----Highest vaccinated by continent
+--select dea. continent,  SUM(cast(new_vaccinations as int)) as TotalVaccinated
+--from CovidDeaths as dea
+--Join CovidVaccinations as vac
+--	on dea.location = vac.location 
+--	and dea.date=vac.date
+--where dea.continent is not null
+--group by dea.continent
+--order by TotalVaccinated desc
+
+--create view for visulization
+
+Create view PercentPopulationVaccinated as
+select dea.continent, dea.location, dea.date, dea.population, vac.new_vaccinations
+, SUM(cast(new_vaccinations as int)) OVER (partition by dea.location order by dea.location
+, dea.date) as TotalVaccinationsPerLocation
+--, (TotalVaccinationsPerLocation/population) as AverageVaccinatedPerLocation
+from CovidDeaths as dea
+Join CovidVaccinations as vac
+	on dea.location = vac.location 
+	and dea.date=vac.date
+where dea.continent is not null
+--order by 2,3
+
+select *
+from
+PercentPopulationVaccinated
