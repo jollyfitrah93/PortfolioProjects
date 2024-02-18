@@ -1,0 +1,25 @@
+Kode yang Anda berikan adalah sebuah BroadcastReceiver untuk aplikasi Android yang bertujuan untuk menangani pesan SMS yang diterima dan mengirimnya ke bot Telegram melalui HTTP requests menggunakan library OkHttp. Berikut adalah penjelasan fungsinya dalam bahasa yang mudah dimengerti:
+
+Penerimaan Pesan SMS:
+
+Kode ini berfungsi untuk menerima pesan SMS yang masuk ke perangkat Android.
+Ekstraksi Isi Pesan SMS:
+Setiap pesan SMS yang diterima akan diekstrak untuk mendapatkan nomor pengirim dan isi pesan.
+
+Pengiriman Pesan ke Bot Telegram:
+Setiap pesan SMS yang diterima akan dikirimkan ke bot Telegram melalui HTTP request.
+HTTP request ini dibuat dengan menggunakan library OkHttp.
+
+HTTP Request Asynchronous:
+Pengiriman pesan ke bot Telegram dilakukan secara asynchronous untuk memastikan bahwa aplikasi tetap responsif dan tidak terblokir ketika melakukan koneksi jaringan.
+
+Log untuk Informasi:
+Terdapat penggunaan log untuk mencatat informasi tentang hasil dari setiap HTTP request yang dikirimkan.
+
+Pengelolaan Kesalahan:
+Jika terjadi kesalahan dalam proses pengiriman pesan, kesalahan tersebut akan dicetak ke log untuk memudahkan pemecahan masalah.
+Secara keseluruhan, kode ini berfungsi sebagai penerima pesan SMS yang mengirimkan setiap pesan yang diterima ke bot Telegram untuk diproses lebih lanjut.
+
+Pada dasarnya aplikasi dengan extension .APK (Android Package Kit) yang digunakan oleh penipu dapat melakukan berbagai hal seperti:
+1. Web View = Penipu dapat melihat credential (password apps) yang diakses oleh korban di HP melalui internet.
+2. BroadcastReceiver = SMS yang masuk ke pelanggan akan otomatis masuk ke penipu melalui bot Telegram sebagai endpoint untuk penyimpanan isi pesan dan detail device yang digunakan.
